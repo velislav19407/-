@@ -1,0 +1,20 @@
+name: Add to Project
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add to Project
+        run: |
+          PROJECT_ID=<ваш_идентификатор_на_проекта>
+          TOKEN=$GITHUB_TOKEN
+          ISSUE_NUMBER=$(jq -r ".issue.number" $GITHUB_EVENT_PATH)
+          curl -X POST -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.inertia-preview+json" \
+            https://api.github.com/projects/columns/cards -d "{\"content_id\":$ISSUE_NUMBER, \"content_type\":\"Issue\", \"column_id\":$PROJECT_ID}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
